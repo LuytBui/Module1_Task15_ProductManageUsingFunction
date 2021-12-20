@@ -1,10 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Ứng dụng quản lý sản phẩm sử dụng hàm</title>
+    <style>
+        h2 {
+            padding-left: 60px;
+        }
+
+        .productNameContainer {
+            padding-left: 10px;
+            padding-right: 30px;
+            width: 400px;
+        }
+
+        .productIndexContainer {
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding-left: 10px;
+            padding-right: 30px;
+            width: 400px;
+        }
+        input[type="button"]{
+            background-color:forestgreen;
+            border-radius:4px;
+        }
+        table, th, td {
+            margin: 0 0 0 0;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        tr:nth-child(even) {
+            background-color: deepskyblue;
+        }
+    </style>
 </head>
 <body>
-$END$
+<h2>ỨNG DỤNG QUẢN LÝ SẢN PHẨM</h2>
+<div id="productListContainer"></div>
+
+
+<script>
+    let productList = [
+        {name: "Dell Inspiron 3505"},
+        {name: "Dell Vostro 3500"},
+        {name: "Dell Vostro 5415"},
+        {name: "Dell Latitude 3420"},
+        {name: "Dell AlienWare Gaming M15 R5"},
+        {name: "Dell Gaming G15 5515"},
+    ];
+
+    reloadTable();
+
+    function reloadTable() {
+        // Cập nhật mảng productList lên bảng HTML
+
+        //Tiêu đề
+        let html = '<table>';
+        html += '<tr><th style="width:50px">#</th><th>Tên sản phẩm</th><th></th></tr>';
+
+        //Danh sách
+        productList.forEach((element, index) => {
+            html += '<tr>' +
+                '<td class="productIndexContainer">' + (index + 1) + '</td>' +
+                '<td class="productNameContainer">' + element.name + '</td>' +
+                '<td><input type=\"button\" value=\"Xóa\" onclick=\"deleteButton(this)\"/></td>' +
+                '<td><input type=\"button\" value=\"Sửa\" onclick=\"editButton(this)\"/></td>' +
+                '</tr>'
+        });
+
+        //Chức năng thêm SP
+        html += '<tr style="background-color:white"><td></td>' +
+            '<td><input type=\"text\" id=\"newProductInput\"/></td>' +
+            '<td colspan="2"><input type=\"button\" value=\"Thêm SP\" onclick=\"addProduct()\" style=\"background-color:yellow\"/></td>' +
+            '</tr>';
+
+
+        html += '</table>';
+        document.getElementById('productListContainer').innerHTML = html;
+    }
+
+
+    function deleteButton(htmlButtonElement) {
+        // khi button Xóa htmlButtonElement được click
+        let index = indexOfButton(htmlButtonElement);
+        deleteProductListItem(index);
+        reloadTable();
+    }
+
+    function indexOfButton(htmlButtonElement) {
+        // trả về số thứ tự của hàng của đối tượng htmlButtonElement
+        // bằng cách tìm giá trị trong ô <td> ở cột 0, cùng hàng với htmlButtonElement được click
+        return parseInt(htmlButtonElement.parentNode.parentNode.children[0].textContent) - 1;
+    }
+
+    function deleteProductListItem(index) {
+        // xóa phần tử vị trí index trong mảng productList
+
+        for (let i = index; i < productList.length - 1; i++) {
+            productList[i] = productList[i + 1];
+        }
+        productList.pop();
+    }
+
+    function editButton(htmlButtonElement) {
+        // khi button Sửa htmlButtonElement được click
+        let index = indexOfButton(htmlButtonElement);
+        let message = 'Sửa tên sản phẩm:\n' + productList[index].name;
+        let editProductName = prompt(message);
+        productList[index].name = editProductName;
+        reloadTable();
+    }
+
+    function addProduct() {
+        let newProductName = document.getElementById('newProductInput').value;
+        if (newProductName === '') {
+            return;
+        }
+        let newProduct = {name: newProductName};
+        productList.push(newProduct);
+        document.getElementById('newProductInput').value = '';
+        reloadTable();
+        document.getElementById('newProductInput').focus();
+    }
+
+
+
+</script>
+
+
 </body>
 </html>
